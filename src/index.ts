@@ -311,7 +311,7 @@ async function init() {
     return
   }
 
-  // 拿到用户所选择的参数
+  // 解构用户所选择的参数
   const { framework, overwrite, packageName, variant } = result
   // 拿到创建的文件的绝对路径
   const root = path.join(cwd, targetDir)
@@ -370,7 +370,7 @@ async function init() {
   }
 
   console.log(`\nScaffolding project in ${root}...`)
-  // 确认模板路径
+  // 确认模版文件的路径
   const templateDir = path.resolve(
     fileURLToPath(import.meta.url),
     '../..',
@@ -387,16 +387,17 @@ async function init() {
   }
 
   const files = fs.readdirSync(templateDir)
+  // 将除了package.json之外的文件全部复制
   for (const file of files.filter((f) => f !== 'package.json')) {
     write(file)
   }
-
+  //获取到package.json的内容
   const pkg = JSON.parse(
     fs.readFileSync(path.join(templateDir, `package.json`), 'utf-8'),
   )
-
+  //修改package.json的名字
   pkg.name = packageName || getProjectName()
-
+  //写入package.json
   write('package.json', JSON.stringify(pkg, null, 2) + '\n')
 
   if (isReactSwc) {
